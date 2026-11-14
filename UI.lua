@@ -3,8 +3,9 @@ local _, ns = ...
 local UI = {}
 ns.UI = UI
 
-local UPCOMING = 4
-local WIDTH = 290
+local UPCOMING = 3
+local HINTS = 3
+local WIDTH = 330
 
 local frame = CreateFrame("Frame", "ExptrailFrame", UIParent, "BackdropTemplate")
 UI.frame = frame
@@ -112,22 +113,30 @@ function UI.Refresh()
     frame:Show()
 
     local guide = E.guide
-    if not guide then
+    if not (guide and guide.main) then
         header:SetText("Exptrail")
         current:SetText("Nenhum guia carregado. Use /et list e /et load <guia>.")
         objectives:SetText("")
         upcoming:SetText("")
     else
-        local count = #guide.steps
+        local count = #guide.main
         local step, index = E.Current()
         header:SetText(string.format("%s  (%d/%d)", guide.name, math.min(index, count), count))
         if step then
-            local main, lines = E.Describe(step)
-            current:SetText(main)
-            objectives:SetText(lines and table.concat(lines, "\n") or "")
+            current:SetText(table.concat(E.Lines(step, index), "\n"))
+            local hints = E.Hints(HINTS)
+            for i, hint in ipairs(hints) do
+                hints[i] = "|cffa0a0a0Enquanto isso:|r " .. hint
+            end
+            objectives:SetText(table.concat(hints, "\n"))
             local list = {}
-            for i = index + 1, math.min(index + UPCOMING, count) do
-                list[#list + 1] = (E.Describe(guide.steps[i]))
+            for i = index + 1, count do
+                local nextStep = guide.main[i]
+                if E.Status(nextStep, i) == "active" then
+                    list[#list + 1] = E.Lines(nextStep, i)[1]
+                    if #list >= UPCOMING then break end
+                end
+                if i - index > 30 then break end
             end
             upcoming:SetText(table.concat(list, "\n"))
         else
@@ -154,7 +163,4 @@ ns.On("PLAYER_LOGIN", function()
     trackXP()
 end)
 
-ns.On("PLAYER_XP_UPDATE", function()
-    trackXP()
-    UI.Refresh()
-end)
+ns.On("PLAYER_XP_UPDATE", trackXP)

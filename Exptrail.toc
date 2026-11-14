@@ -1,11 +1,15 @@
 ## Interface: 16001
 ## Title: Exptrail
 ## Notes: Guia de leveling passo a passo com seta de navegação, automação de quests e gravador de rotas.
-## Version: 0.1.0
+## Version: 0.2.0
 ## SavedVariablesPerCharacter: ExptrailCharDB
 
 Core.lua
-Guides\Alliance_Human_01-10.lua
+Parser.lua
+Guides\RXP\Alliance-1-14_DwarfGnome.lua
+Guides\RXP\Alliance-1-13_Human.lua
+Guides\RXP\Alliance-1-10_NightElf.lua
+Guides\RXP\Alliance-11-20.lua
 Engine.lua
 UI.lua
 Arrow.lua

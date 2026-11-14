@@ -9,8 +9,14 @@ function ns.RegisterGuide(guide)
     ns.guides[guide.name] = guide
 end
 
--- Permite que arquivos de guia exportados pelo gravador se registrem.
-Exptrail = { RegisterGuide = ns.RegisterGuide }
+-- Guias em texto (formato RestedXP) ficam guardados até o login, quando já
+-- se sabe a classe e a raça do personagem para aplicar os filtros.
+ns.rawGuides = {}
+
+Exptrail = {
+    RegisterGuide = ns.RegisterGuide,
+    RegisterRXP = function(text) ns.rawGuides[#ns.rawGuides + 1] = text end,
+}
 
 function ns.Print(msg)
     print("|cff33ccffExptrail|r: " .. tostring(msg))
@@ -39,7 +45,8 @@ end)
 
 local defaults = {
     step = 1,
-    manual = {},   -- passos marcados como feitos manualmente (ou por chegada)
+    manual = {},   -- passos pulados manualmente
+    marks = {},    -- pontos visitados e eventos (pedra de regresso, voo) do guia atual
     done = {},     -- questIDs entregues
     names = {},    -- título da quest -> questID visto neste personagem
     recorded = {}, -- passos gravados pelo gravador de rotas

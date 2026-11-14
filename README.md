@@ -33,34 +33,44 @@ O arquivo `Exptrail.toc` declara `Interface: 16001`. Se o jogo listar o addon co
 | `/et export` | Abre a rota gravada como Lua para copiar |
 | `/et clear` | Apaga a rota gravada |
 
+## Guias incluídos
+
+Rotas da Aliança de 1 a 21 para o WoW Forever, vindas do repositório público do [RestedXP Guides](https://github.com/RestedXP/RXPGuides): Anão/Gnomo, Humano e Elfo Noturno até o 11-14, depois Loch Modan, Westfall, Costa Negra, Redridge e Vale Gris. O addon escolhe a rota inicial pela raça, aplica os filtros de classe e passa para o guia seguinte sozinho. Os textos dos passos estão em inglês.
+
 ## Escrevendo guias
 
-Um guia é um arquivo Lua em `Guides/`, listado no `Exptrail.toc`:
+O Exptrail lê dois formatos.
+
+**Formato RestedXP**: o mesmo texto usado pelo RXPGuides, registrado com `Exptrail.RegisterRXP([[ ... ]])`. São entendidos os comandos `.goto`, `.accept`, `.turnin`, `.complete`, `.xp`, `.collect`, `.train`, `.zone`, `.subzone`, `.home`, `.hs`, `.fp`, `.fly`, as condições (`.isOnQuest`, `.isQuestComplete`, `.isQuestTurnedIn`, `.isQuestAvailable`, `.itemcount`, `.money`, `.zoneskip`, `.subzoneskip`), os filtros `<<` e as marcas `#completewith`, `#sticky`, `#label`, `#season`, `#xprate`, `#hardcore` e `#ssf`. Os demais comandos aparecem só como texto. Passos `#completewith` e `#sticky` viram lembretes ("Enquanto isso") em vez de passos paralelos.
+
+Para importar outro arquivo do RXPGuides:
+
+```
+python3 tools/import_rxp.py <RXPGuides>/Guides/forever Guides/RXP Horde-01-12_Durotar.lua
+```
+
+e acrescente o arquivo ao `Exptrail.toc`.
+
+**Formato nativo**: uma tabela Lua, que é o que o gravador exporta:
 
 ```lua
 Exptrail.RegisterGuide({
     name = "Minha rota",
-    faction = "Alliance", -- opcional
-    race = "Human",       -- opcional
-    next = "Nome do guia seguinte", -- opcional
     steps = {
-        { type = "accept", quest = 783, name = "A Threat Within", map = 37, x = 48.2, y = 42.9 },
+        { type = "accept", quest = 783, name = "A Threat Within", map = 1429, x = 48.2, y = 42.9 },
         { type = "complete", quest = 7, obj = 1 },
         { type = "turnin", quest = 783 },
         { type = "goto", x = 42.1, y = 65.9, text = "Vila d'Ouro" },
         { type = "level", level = 6 },
-        { type = "home", text = "na estalagem" },
-        { type = "train" },
+        { type = "home", text = "Defina a pedra de regresso na estalagem" },
     },
 })
 ```
 
-- `quest` é o ID da quest; `name` é o título, usado quando o ID não bate.
-- `map` é o ID do mapa; sem ele, as coordenadas valem para a zona atual.
-- Passos `home` e `train` sem detecção automática são concluídos com o botão `>`.
+O caminho mais rápido para rotas novas é gravar: `/et rec`, jogue a rota, `/et export`. A rota gravada também aparece no jogo como o guia `Gravado` após `/reload`.
 
-O caminho mais rápido é gravar: `/et rec`, jogue a rota, `/et export`. A rota gravada também aparece no jogo como o guia `Gravado` após `/reload`.
+## Licença e créditos
 
-## Estado atual
+O Exptrail é distribuído sob [CC BY-NC-SA 4.0](LICENSE): uso não comercial, com atribuição e sob a mesma licença.
 
-O guia incluído (Humano, Vila Norte e Vila d'Ouro) é um rascunho baseado nos dados clássicos de Elwynn. IDs e coordenadas ainda não foram conferidos dentro do WoW Forever.
+Os guias em `Guides/RXP` e o formato de guia são do projeto [RestedXP Guides](https://github.com/RestedXP/RXPGuides), publicados sob a mesma licença. Os arquivos foram adaptados apenas na chamada de registro; o conteúdo das rotas é deles. O Exptrail não tem vínculo com o RestedXP nem com a Blizzard.

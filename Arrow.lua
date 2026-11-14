@@ -17,18 +17,16 @@ texture:SetPoint("TOP")
 local label = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 label:SetPoint("BOTTOM")
 
-local target -- { map, x, y, index, radius }
+local visible = false
 
 function Arrow.Refresh()
-    target = nil
-    local step, index = ns.Engine.Current()
-    if ns.db.arrow and step and step.x and step.y then
-        target = { map = step.map, x = step.x / 100, y = step.y / 100, index = index, radius = step.radius }
-    end
-    frame:SetShown(target ~= nil)
+    visible = ns.db.arrow and ns.Engine.Target() ~= nil
+    frame:SetShown(visible)
 end
 
 local function update()
+    local target, index, key = ns.Engine.Target()
+    if not target then return end
     local map, _, _, continent, world = ns.PlayerPosition()
     if not world then
         texture:Hide()
@@ -36,22 +34,26 @@ local function update()
         return
     end
 
-    -- Sem mapa válido no passo, as coordenadas valem para a zona atual.
-    local targetMap = target.map
-    if not (targetMap and C_Map.GetMapInfo(targetMap)) then
-        targetMap = map
+    -- Coordenadas de mundo: x cresce para o norte, y cresce para o oeste.
+    local north, west, targetContinent
+    if target.north then
+        north, west, targetContinent = target.north, target.west, target.instance
+    else
+        -- Sem mapa válido no passo, as coordenadas valem para a zona atual.
+        local targetMap = target.map
+        if not (targetMap and C_Map.GetMapInfo(targetMap)) then targetMap = map end
+        local point
+        targetContinent, point = C_Map.GetWorldPosFromMapPos(targetMap, CreateVector2D(target.x / 100, target.y / 100))
+        if point then north, west = point:GetXY() end
     end
-    local targetContinent, targetWorld = C_Map.GetWorldPosFromMapPos(targetMap, CreateVector2D(target.x, target.y))
-    if not targetWorld or targetContinent ~= continent then
+    if not north or targetContinent ~= continent then
         texture:Hide()
         label:SetText("outro continente")
         return
     end
 
-    -- Coordenadas de mundo: x cresce para o norte, y cresce para o oeste.
     local px, py = world:GetXY()
-    local tx, ty = targetWorld:GetXY()
-    local north, west = tx - px, ty - py
+    north, west = north - px, west - py
     local distance = math.sqrt(north * north + west * west)
     label:SetText(string.format("%d m", distance))
 
@@ -64,17 +66,15 @@ local function update()
         texture:Hide()
     end
 
-    local step = ns.Engine.Current()
-    if step and step.type == "goto" and distance <= (target.radius or ARRIVE_YARDS) then
-        ns.db.manual[target.index] = true
-        ns.Engine.Queue()
+    if distance <= (target.radius or ARRIVE_YARDS) then
+        ns.Engine.Reached(key, index)
     end
 end
 
 local elapsed = 0
 frame:SetScript("OnUpdate", function(_, dt)
     elapsed = elapsed + dt
-    if elapsed < 0.05 or not target then return end
+    if elapsed < 0.05 or not visible then return end
     elapsed = 0
     update()
 end)
