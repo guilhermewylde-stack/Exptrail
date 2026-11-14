@@ -1,0 +1,10 @@
+## Interface: 16001
+## Title: Exptrail - Guias RestedXP (1-21)
+## Notes: Rotas públicas do projeto RestedXP Guides para o Exptrail. Licença CC BY-NC-SA 4.0.
+## Version: 0.3.0
+## Dependencies: Exptrail
+
+Guides\Alliance-1-14_DwarfGnome.lua
+Guides\Alliance-1-13_Human.lua
+Guides\Alliance-1-10_NightElf.lua
+Guides\Alliance-11-20.lua

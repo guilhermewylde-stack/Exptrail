@@ -1,7 +1,7 @@
 local _, ns = ...
 
--- Leitor do formato de guia do RestedXP (RXPGuides, CC BY-NC-SA 4.0).
--- Converte o texto de um guia em passos com elementos que o motor entende.
+-- Leitor de guias em texto, compatível com a sintaxe usada pelo RestedXP
+-- Guides. Converte o texto em passos com elementos que o motor entende.
 local P = {}
 ns.Parser = P
 

@@ -4,9 +4,9 @@ Addon de guia de leveling para World of Warcraft: Forever. Mostra o próximo pas
 
 ## Instalação
 
-Copie a pasta inteira para `World of Warcraft/<pasta do Forever>/Interface/AddOns/Exptrail` e reinicie o jogo.
+Copie a pasta `Exptrail` para `World of Warcraft/<pasta do Forever>/Interface/AddOns/` e reinicie o jogo. A pasta `Exptrail_RXP` é um pacote de rotas opcional; copie-a para o mesmo lugar se quiser usá-lo.
 
-O arquivo `Exptrail.toc` declara `Interface: 16001`. Se o jogo listar o addon como desatualizado, troque esse número pelo que `/dump select(4, GetBuildInfo())` mostrar.
+O arquivo `Exptrail/Exptrail.toc` declara `Interface: 16001`. Se o jogo listar o addon como desatualizado, troque esse número pelo que `/dump select(4, GetBuildInfo())` mostrar.
 
 ## O que faz
 
@@ -33,23 +33,17 @@ O arquivo `Exptrail.toc` declara `Interface: 16001`. Se o jogo listar o addon co
 | `/et export` | Abre a rota gravada como Lua para copiar |
 | `/et clear` | Apaga a rota gravada |
 
-## Guias incluídos
+## Guias
 
-Rotas da Aliança de 1 a 21 para o WoW Forever, vindas do repositório público do [RestedXP Guides](https://github.com/RestedXP/RXPGuides): Anão/Gnomo, Humano e Elfo Noturno até o 11-14, depois Loch Modan, Westfall, Costa Negra, Redridge e Vale Gris. O addon escolhe a rota inicial pela raça, aplica os filtros de classe e passa para o guia seguinte sozinho. Os textos dos passos estão em inglês.
+O addon principal não traz rotas: elas vêm de pacotes ou do gravador.
+
+O pacote opcional `Exptrail_RXP` tem as rotas públicas do [RestedXP Guides](https://github.com/RestedXP/RXPGuides) para a Aliança, de 1 a 21. Ele tem licença própria (CC BY-NC-SA 4.0); veja o README da pasta. Com ele instalado, o Exptrail escolhe a rota inicial pela raça, aplica os filtros de classe e passa para o guia seguinte sozinho.
 
 ## Escrevendo guias
 
 O Exptrail lê dois formatos.
 
 **Formato RestedXP**: o mesmo texto usado pelo RXPGuides, registrado com `Exptrail.RegisterRXP([[ ... ]])`. São entendidos os comandos `.goto`, `.accept`, `.turnin`, `.complete`, `.xp`, `.collect`, `.train`, `.zone`, `.subzone`, `.home`, `.hs`, `.fp`, `.fly`, as condições (`.isOnQuest`, `.isQuestComplete`, `.isQuestTurnedIn`, `.isQuestAvailable`, `.itemcount`, `.money`, `.zoneskip`, `.subzoneskip`), os filtros `<<` e as marcas `#completewith`, `#sticky`, `#label`, `#season`, `#xprate`, `#hardcore` e `#ssf`. Os demais comandos aparecem só como texto. Passos `#completewith` e `#sticky` viram lembretes ("Enquanto isso") em vez de passos paralelos.
-
-Para importar outro arquivo do RXPGuides:
-
-```
-python3 tools/import_rxp.py <RXPGuides>/Guides/forever Guides/RXP Horde-01-12_Durotar.lua
-```
-
-e acrescente o arquivo ao `Exptrail.toc`.
 
 **Formato nativo**: uma tabela Lua, que é o que o gravador exporta:
 
@@ -71,6 +65,6 @@ O caminho mais rápido para rotas novas é gravar: `/et rec`, jogue a rota, `/et
 
 ## Licença e créditos
 
-O Exptrail é distribuído sob [CC BY-NC-SA 4.0](LICENSE): uso não comercial, com atribuição e sob a mesma licença.
+O código em `Exptrail/` é original deste projeto e não inclui código nem rotas de terceiros. O leitor de guias é compatível com a sintaxe de texto usada pelo RestedXP Guides.
 
-Os guias em `Guides/RXP` e o formato de guia são do projeto [RestedXP Guides](https://github.com/RestedXP/RXPGuides), publicados sob a mesma licença. Os arquivos foram adaptados apenas na chamada de registro; o conteúdo das rotas é deles. O Exptrail não tem vínculo com o RestedXP nem com a Blizzard.
+O pacote `Exptrail_RXP/` é conteúdo do RestedXP Guides sob CC BY-NC-SA 4.0 e é distribuído separadamente, com os créditos na própria pasta. O Exptrail não tem vínculo com o RestedXP nem com a Blizzard.
